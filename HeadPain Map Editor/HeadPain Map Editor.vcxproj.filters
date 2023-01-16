@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="renderSystem\renderSystem.cpp" />
+    <ClCompile Include="FileManager.cpp" />
+    <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Editor.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="settings.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="renderSystem\colors.h" />
+    <ClInclude Include="renderSystem\RenderObject.h" />
+    <ClInclude Include="renderSystem\renderSystem.h" />
+    <ClInclude Include="FileManager.h" />
+    <ClInclude Include="Object.h" />
+    <ClInclude Include="Editor.h" />
+    <ClInclude Include="Coord.h" />
+  </ItemGroup>
+</Project>

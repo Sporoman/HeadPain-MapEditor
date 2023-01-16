@@ -1,0 +1,2 @@
+LvlSizeX=80
+LvlSizeY=20
