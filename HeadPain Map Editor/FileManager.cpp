@@ -23,21 +23,34 @@ FileManager::~FileManager()
 	delete _lastLevel; 
 }
 
-bool FileManager::ReadLevel(std::string& const fileName)
+bool FileManager::ReadLevel()
 {
-	// Opening selected level
-	fileName.append(".txt");
-
+	std::string fileName = "levels/level.txt";
 	std::fstream file(fileName, std::ios_base::in);
 	if (!file.is_open())
 		return false;
 
-	// Reading level from a file
+	// Reading level from the file
 	std::string line;
 
 	_lastLevel->clear();
 	while (getline(file, line))
 		_lastLevel->append(line);
+
+	file.close();
+	return true;
+}
+
+bool FileManager::WriteLevel()
+{
+	std::string fileName = "levels/level.txt";
+	std::fstream file(fileName, std::ios_base::out);
+	if (!file.is_open())
+		return false;
+
+	// Writing level to the file
+	std::string levelStr;
+	file << levelStr;
 
 	file.close();
 	return true;

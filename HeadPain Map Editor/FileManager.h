@@ -17,7 +17,8 @@ public:
 	FileManager();
 	~FileManager();
 
-	bool ReadLevel(std::string& const fileName);
+	bool ReadLevel();
+	bool WriteLevel();
 	const std::string* GetLastLevel();
 	const Settings* const GetSettings();
 
