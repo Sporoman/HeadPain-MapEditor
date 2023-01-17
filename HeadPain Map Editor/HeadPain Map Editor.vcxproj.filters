@@ -17,6 +17,5 @@
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Editor.h" />
-    <ClInclude Include="Coord.h" />
   </ItemGroup>
 </Project>

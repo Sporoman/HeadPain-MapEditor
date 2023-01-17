@@ -137,7 +137,6 @@
     <Text Include="settings.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Coord.h" />
     <ClInclude Include="Editor.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="Object.h" />
