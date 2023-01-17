@@ -14,6 +14,11 @@ enum Mode
 	EDIT_BKG
 };
 
+struct Coord {
+	int x = 0;
+	int y = 0;
+};
+
 class Editor
 {
 private:
@@ -23,6 +28,8 @@ private:
 	RenderSystem* _renSys;
 	FileManager* _manager;
 	const Settings* _settings;
+
+	Coord _playerCoord;
 
 	Object* _player;
 	Object* _empty;
@@ -39,16 +46,20 @@ public:
 
 private:
 	void ChooseMode();
-	void ClearObjectMap();
-	Object* CreateObject(Entity entity);
 	void Shutdown();
 
 	void Initialize();
 	void Render();
+	void Move();
+	
+	void MoveHeroTo(int y, int x);
 	void RenderHud();
 	void RestartLevel();
-	void Move();
-	void MoveHeroTo(int y, int x);
+	void ClearObjectMap();
+	Object* CreateObject(unsigned char symbol);
+
+	void CreateEmptyLevel();
+	void LoadLevel();
 };
 
 #endif // GAME_H
