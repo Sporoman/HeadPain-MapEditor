@@ -1,71 +1,26 @@
 #include "Object.h"
 
-int Object::__idObjects    = 0;
-int Object::__countObjects = 0;
 
-Object::Object(unsigned char symbol) : Object(symbol, Coord{ 0,0 })
+Object::Object(unsigned char symbol) : Object(GetInitEntity(symbol))
 {}
 
-Object::Object(unsigned char symbol, Coord coord) : Object(GetInitEntity(symbol), coord)
-{}
-
-Object::Object(Entity entity, Coord coord) : _entity(entity), _coord(coord)
+Object::Object(Entity entity)
 {
-	// Object id
-	_id = __idObjects;
-	__idObjects++;
-
-	// Plus the count of objects
-	__countObjects++;
-
-	// Initializing the object
-	_mapSymbol = GetInitMapSymbol(_entity);
-
-	// Initializing the render object
-	_renderObj.symbol      = GetInitRenderSymbol(_entity);
-	_renderObj.symbolColor = GetInitColorSymbol(_entity);
-	_renderObj.bkgColor    = GetInitColorBkg(_entity);
+	SetEntity(entity);
 }
-
-Object::Object(Entity entity) : Object(entity, Coord{ 0,0 })
-{}
 
 Object::~Object()
+{}
+
+void Object::SetEntity(Entity entity)
 {
-	// Minus the count of objects
-	__countObjects--;
-}
+	// Initializing the object
+	_mapSymbol = GetInitMapSymbol(entity);
 
-void Object::MoveOn(DirMove dir)
-{
-	switch (dir)
-	{
-		case DirMove::up:       MoveOnUp();       break;
-		case DirMove::left:     MoveOnLeft();     break;
-		case DirMove::down:     MoveOnDown();     break;
-		case DirMove::right:    MoveOnRight();    break;
-
-		default: break;
-	}
-}
-
-void Object::SetCoord(int x, int y)
-{
-	Coord coord{ x, y };
-	SetCoord(coord);
-}
-
-void Object::SetCoord(Coord coord)
-{
-	if (coord.x < 0)
-		_coord.x = 0;
-	else
-		_coord.x = coord.x;
-
-	if (coord.y < 0)
-		_coord.y = 0;
-	else
-		_coord.y = coord.y;
+	// Initializing the render object
+	_renderObj.symbol = GetInitRenderSymbol(entity);
+	_renderObj.symbolColor = GetInitColorSymbol(entity);
+	_renderObj.bkgColor = GetInitColorBkg(entity);
 }
 
 unsigned char Object::GetMapSymbol()
@@ -91,47 +46,6 @@ Color Object::GetColorBackground()
 const RenderObject& Object::GetRenderObject()
 {
 	return _renderObj;
-}
-
-Coord Object::GetCoord()
-{
-	return _coord;
-}
-
-Entity Object::GetEntity()
-{
-	return _entity;
-}
-
-int Object::GetObjectsCount()
-{
-	return __countObjects;
-}
-
-void Object::MoveOnUp()
-{
-	if (_coord.y <= 0)
-		_coord.y = 0;
-	else
-		_coord.y--;
-}
-
-void Object::MoveOnLeft()
-{
-	if (_coord.x <= 0)
-		_coord.x = 0;
-	else
-		_coord.x--;
-}
-
-void Object::MoveOnRight()
-{
-	_coord.x++;
-}
-
-void Object::MoveOnDown()
-{
-	_coord.y++;
 }
 
 Entity Object::GetInitEntity(unsigned char symbol)
