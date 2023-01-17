@@ -132,12 +132,15 @@ void Editor::Initialize()
 
 void Editor::Render()
 {
+	// Render map
 	for (int y = 0; y < _settings->lvlSizeY; ++y)
 		for (int x = 0; x < _settings->lvlSizeX; ++x)
 			_renSys->DrawChar(y, x, _objectsMap[y][x]->GetRenderObject());
 
+	// Render player
+	_renSys->DrawChar(_playerCoord.y, _playerCoord.x, _player->GetRenderObject());
+
 	RenderHud();
-	//render player
 	_renSys->Render();
 }
 
