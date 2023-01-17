@@ -12,6 +12,7 @@ class Object
 private:
 	unsigned char _mapSymbol;	// Symbol on the physical map (before render)
 	RenderObject  _renderObj;	// struct: symbol + color symbol + color backgorund
+	Entity _entity;
 
 public:
 	Object(unsigned char symbol);
@@ -20,6 +21,7 @@ public:
 
 	void SetEntity(Entity entity);
 
+	Entity GetEntity();
 	unsigned char GetMapSymbol();
 	unsigned char GetRenderSymbol();
 	Color GetColorSymbol();

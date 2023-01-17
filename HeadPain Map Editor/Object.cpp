@@ -14,13 +14,20 @@ Object::~Object()
 
 void Object::SetEntity(Entity entity)
 {
+	_entity = entity;
+
 	// Initializing the object
-	_mapSymbol = GetInitMapSymbol(entity);
+	_mapSymbol = GetInitMapSymbol(_entity);
 
 	// Initializing the render object
-	_renderObj.symbol = GetInitRenderSymbol(entity);
-	_renderObj.symbolColor = GetInitColorSymbol(entity);
-	_renderObj.bkgColor = GetInitColorBkg(entity);
+	_renderObj.symbol      = GetInitRenderSymbol(_entity);
+	_renderObj.symbolColor = GetInitColorSymbol(_entity);
+	_renderObj.bkgColor    = GetInitColorBkg(_entity);
+}
+
+Entity Object::GetEntity()
+{
+	return _entity;
 }
 
 unsigned char Object::GetMapSymbol()
