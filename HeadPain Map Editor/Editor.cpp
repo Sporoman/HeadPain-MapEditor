@@ -180,14 +180,18 @@ void Editor::Move()
 	unsigned char inputChar = _getch();
 	inputChar = tolower(inputChar);
 
+	int p_x = _playerCoord.x;
+	int p_y = _playerCoord.y;
+	Entity p_entity = _player->GetEntity();
+
 	if (inputChar == 0 || inputChar == 224)	// for special keys
 		switch (_getch())
 		{
 			// Up Down Left Right for arrays
-			case 72:   MoveHeroTo(_playerCoord.y - 1, _playerCoord.x);	 break;
-			case 80:   MoveHeroTo(_playerCoord.y + 1, _playerCoord.x);   break;
-			case 75:   MoveHeroTo(_playerCoord.y, _playerCoord.x - 1);	 break;
-			case 77:   MoveHeroTo(_playerCoord.y, _playerCoord.x + 1);   break;
+			case 72:   ChangeEntity(p_y, p_x, p_entity);	    break;
+			case 80:   ChangeEntity(p_y, p_x, Entity::empty);	break;
+			case 75:   MinusPlayerEntity();	  break;
+			case 77:   PlusPlayerEntity();    break;
 		}
 	else
 		switch (inputChar)
@@ -198,14 +202,51 @@ void Editor::Move()
 			case 'a': case 228: case 148:	MoveHeroTo(_playerCoord.y, _playerCoord.x - 1);	  break;
 			case 'd': case 162: case 130:	MoveHeroTo(_playerCoord.y, _playerCoord.x + 1);   break;
 
+			case 'e': case 227: case 147:	PlusPlayerEntity();    break;
+			case 'q': case 169: case 137:   MinusPlayerEntity();   break;
+			case 'f': case 160: case 128:	ChangeEntity(p_y, p_x, Entity::empty);	break;
+			case 32:	ChangeEntity(p_y, p_x, p_entity);	break;	// Space
+
 			case 'r': case 170: case 138:   RestartLevel();   break;	// Restart level
 		}
 }
 
 void Editor::MoveHeroTo(int y, int x)
 {
-	_playerCoord.y = y;
-	_playerCoord.x = x;
+	if (y >= 0 && y < _settings->lvlSizeY)
+		_playerCoord.y = y;
+
+	if (x >= 0 && x < _settings->lvlSizeX)
+		_playerCoord.x = x;
+}
+
+void Editor::ChangeEntity(int y, int x, Entity entity)
+{
+	Object* obj = _objectsMap[y][x];
+
+	if (obj == _empty || obj == _wall || obj == _fog)
+	{
+		// Create the new object
+		switch (entity)
+		{
+			case Entity::empty:		_objectsMap[y][x] = _empty;		break;
+			case Entity::wall:		_objectsMap[y][x] = _wall;		break;
+			case Entity::fogOfWar:	_objectsMap[y][x] = _fog;		break;
+		
+			default:	_objectsMap[y][x] = CreateObject(entity);
+		}
+	}
+	else
+	{
+		switch (entity)
+		{
+			case Entity::empty:		DeleteObject(y, x);		_objectsMap[y][x] = _empty;		break;
+			case Entity::wall:		DeleteObject(y, x);		_objectsMap[y][x] = _wall;		break;
+			case Entity::fogOfWar:	DeleteObject(y, x);		_objectsMap[y][x] = _fog;		break;
+
+			default:	_objectsMap[y][x]->SetEntity(entity);
+		}
+	}
 }
 
 void Editor::CreateEmptyLevel()
@@ -264,4 +305,33 @@ void Editor::ClearObjectMap()
 Object* Editor::CreateObject(unsigned char symbol)
 {
 	return new Object(symbol);
+}
+
+Object* Editor::CreateObject(Entity entity)
+{
+	return new Object(entity);
+}
+
+void Editor::DeleteObject(int y, int x)
+{
+	Object* obj = _objectsMap[y][x];
+
+	if (obj != _empty && obj != _wall && obj != _fog)
+		delete obj;
+
+	_objectsMap[y][x] = nullptr;
+}
+
+void Editor::PlusPlayerEntity()
+{
+	int entity = (int)_player->GetEntity();
+	++entity;
+	_player->SetEntity((Entity)entity);
+}
+
+void Editor::MinusPlayerEntity()
+{
+	int entity = (int)_player->GetEntity();
+	--entity;
+	_player->SetEntity((Entity)entity);
 }

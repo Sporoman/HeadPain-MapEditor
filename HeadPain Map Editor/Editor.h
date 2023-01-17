@@ -53,10 +53,15 @@ private:
 	void Move();
 	
 	void MoveHeroTo(int y, int x);
+	void ChangeEntity(int y, int x, Entity entity);
 	void RenderHud();
 	void RestartLevel();
 	void ClearObjectMap();
 	Object* CreateObject(unsigned char symbol);
+	Object* CreateObject(Entity entity);
+	void DeleteObject(int y, int x);		// Empty, wall and fog do not can be removed
+	void PlusPlayerEntity();
+	void MinusPlayerEntity();
 
 	void CreateEmptyLevel();
 	void LoadLevel();
