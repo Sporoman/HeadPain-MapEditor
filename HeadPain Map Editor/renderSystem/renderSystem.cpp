@@ -68,7 +68,7 @@ void RenderSystem::DrawChar(int y, int x, const RenderObject& obj)
 	_backBuffer[y][x].symbolColor = obj.symbolColor;
 
 	// If the object has a black background, it is not rendered(= transparent)
-	if (obj.bkgColor != Color::black)
+	//if (obj.bkgColor != Color::black)
 		_backBuffer[y][x].bkgColor = obj.bkgColor;
 }
 
