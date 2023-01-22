@@ -337,5 +337,5 @@ void Editor::MinusPlayerEntity()
 	if (unit == Entity::_error)
 		unit = Entity((int)(Entity::_size) - 1);
 		
-	_user->SetEntity((Entity)entity);
+	_user->SetEntity(unit);
 }
