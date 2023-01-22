@@ -138,6 +138,7 @@ void Editor::Render()
 
 	// Render player
 	_renSys->DrawChar(_playerCoord.y, _playerCoord.x, _user->GetRenderObject());
+	_renSys->DrawBkgCharColor(_playerCoord.y, _playerCoord.x, Color::darkBlue);
 
 	_renSys->Render();
 }
