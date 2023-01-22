@@ -75,7 +75,7 @@ Entity Object::GetInitEntity(unsigned char symbol)
 		case 's':	return Entity::skeleton;
 		case 'r':	return Entity::rock;
 
-		default: return Entity::error;
+		default: return Entity::_error;
 	}
 }
 
@@ -99,7 +99,7 @@ unsigned char Object::GetInitMapSymbol(Entity entity)
 		case Entity::skeleton:		return 's';
 		case Entity::rock:			return 'r';
 
-		case Entity::error:
+		case Entity::_error:
 		default: return '?';
 	}
 }
@@ -124,7 +124,7 @@ unsigned char Object::GetInitRenderSymbol(Entity entity)
 		case Entity::skeleton:		return 2;
 		case Entity::rock:			return 254;
 
-		case Entity::error:
+		case Entity::_error:
 		default: return '?';
 	}
 }
@@ -149,7 +149,7 @@ Color Object::GetInitColorSymbol(Entity entity)
 		case Entity::skeleton:		return Color::white;
 		case Entity::rock:			return Color::darkGray;
 
-		case Entity::error:
+		case Entity::_error:
 		default: return Color::red;
 	}
 }
@@ -174,7 +174,7 @@ Color Object::GetInitColorBkg(Entity entity)
 		case Entity::skeleton:		return Color::black;
 		case Entity::rock:			return Color::black;
 
-		case Entity::error:
+		case Entity::_error:
 		default: return Color::darkMagenta;
 	}
 }

@@ -38,7 +38,7 @@ public:
 
 enum class Entity
 {
-	error,
+	_error,
 	empty,
 	hero,
 	wall,
@@ -53,7 +53,8 @@ enum class Entity
 	fogOfWar,
 	heart,
 	skeleton,
-	rock
+	rock,
+	_size
 };
 
 #endif // OBJECT_H

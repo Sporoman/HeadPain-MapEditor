@@ -12,7 +12,7 @@ Editor::Editor() : _isGameActive(false), _mode(Mode::NONE)
 	const int renSizeY = _settings->lvlSizeY + _settings->hudMaxSizeY;
 	_renSys = new RenderSystem(renSizeY, renSizeX);
 
-	_player	= new Object(Entity::hero);
+	_user	= new Object(Entity::hero);
 	_empty	= new Object(Entity::empty);
 	_wall   = new Object(Entity::wall);
 	_fog    = new Object(Entity::fogOfWar);
@@ -32,12 +32,10 @@ Editor::~Editor()
 {
 	ClearObjectMap();
 	for (int y = 0; y < _settings->lvlSizeY; ++y)
-	{
 		delete _objectsMap[y];
-	}
 	delete[] _objectsMap;
 
-	delete _player;
+	delete _user;
 	delete _empty;
 	delete _wall;
 	delete _fog;
@@ -136,18 +134,17 @@ void Editor::Render()
 	for (int y = 0; y < _settings->lvlSizeY; ++y)
 		for (int x = 0; x < _settings->lvlSizeX; ++x)
 			_renSys->DrawChar(y, x, _objectsMap[y][x]->GetRenderObject());
+	RenderHud();
 
 	// Render player
-	_renSys->DrawChar(_playerCoord.y, _playerCoord.x, _player->GetRenderObject());
+	_renSys->DrawChar(_playerCoord.y, _playerCoord.x, _user->GetRenderObject());
 
-	RenderHud();
 	_renSys->Render();
 }
 
 void Editor::RenderHud()
 {
 	static char textBuffer[25];
-
 	const int _indentX = _settings->lvlSizeX + 5;
 
 	// GLHF
@@ -157,16 +154,13 @@ void Editor::RenderHud()
 	sprintf_s(textBuffer, "Keys");
 	_renSys->SendText(5, _indentX, textBuffer, Color::yellow);
 	
-
-	sprintf_s(textBuffer, "Unit X coord: %i  ", _playerCoord.x);
+	sprintf_s(textBuffer, "Your X coord: %i  ", _playerCoord.x);
 	_renSys->SendText(13, _indentX, textBuffer);
-	sprintf_s(textBuffer, "Unit Y coord: %i  ", _playerCoord.y);
+	sprintf_s(textBuffer, "Your Y coord: %i  ", _playerCoord.y);
 	_renSys->SendText(14, _indentX, textBuffer);
 
-	_renSys->SendText(_settings->lvlSizeY + 1, 4, "Use WASD to move ");
-	_renSys->SendText(_settings->lvlSizeY + 1, 4 + 17, "Unit", Color::green);
-	_renSys->SendText(_settings->lvlSizeY + 2, 4, "Press R to restart level.");
-	_renSys->SendText(_settings->lvlSizeY + 2, 4 + 6, "R", Color::red);
+	_renSys->SendText(_settings->lvlSizeY + 1, 4, "WASD - move ");
+	_renSys->SendText(_settings->lvlSizeY + 2, 4, " R   - restart");
 }
 
 void Editor::RestartLevel()
@@ -182,7 +176,7 @@ void Editor::Move()
 
 	int p_x = _playerCoord.x;
 	int p_y = _playerCoord.y;
-	Entity p_entity = _player->GetEntity();
+	Entity p_entity = _user->GetEntity();
 
 	if (inputChar == 0 || inputChar == 224)	// for special keys
 		switch (_getch())
@@ -294,7 +288,7 @@ void Editor::ClearObjectMap()
 {
 	for (int y = 0; y < _settings->lvlSizeY; ++y)
 		for (int x = 0; x < _settings->lvlSizeX; ++x)
-			if ((_objectsMap[y][x] != _player) && (_objectsMap[y][x] != _empty)
+			if ((_objectsMap[y][x] != _user) && (_objectsMap[y][x] != _empty)
 				&& (_objectsMap[y][x] != _wall) && (_objectsMap[y][x] != _fog))
 			{
 				delete _objectsMap[y][x];
@@ -324,14 +318,24 @@ void Editor::DeleteObject(int y, int x)
 
 void Editor::PlusPlayerEntity()
 {
-	int entity = (int)_player->GetEntity();
+	int entity = (int)_user->GetEntity();
 	++entity;
-	_player->SetEntity((Entity)entity);
+
+	Entity unit = (Entity)entity;
+	if (unit == Entity::_size)
+		unit = Entity(1);
+
+	_user->SetEntity(unit);
 }
 
 void Editor::MinusPlayerEntity()
 {
-	int entity = (int)_player->GetEntity();
+	int entity = (int)_user->GetEntity();
 	--entity;
-	_player->SetEntity((Entity)entity);
+
+	Entity unit = (Entity)entity;
+	if (unit == Entity::_error)
+		unit = Entity((int)(Entity::_size) - 1);
+		
+	_user->SetEntity((Entity)entity);
 }

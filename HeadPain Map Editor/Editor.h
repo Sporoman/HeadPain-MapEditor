@@ -31,7 +31,7 @@ private:
 
 	Coord _playerCoord;
 
-	Object* _player;
+	Object* _user;
 	Object* _empty;
 	Object* _wall;
 	Object* _fog;
