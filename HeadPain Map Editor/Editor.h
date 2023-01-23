@@ -29,7 +29,7 @@ private:
 	FileManager* _manager;
 	const Settings* _settings;
 
-	Coord _playerCoord;
+	Coord _userCoord;
 
 	Object* _user;
 	Object* _empty;
@@ -52,14 +52,15 @@ private:
 	void Render();
 	void Move();
 	
+	void MoveHeroTo(Coord coord);
 	void MoveHeroTo(int y, int x);
-	void ChangeEntity(int y, int x, Entity entity);
+	void ChangeEntity(Coord coord, Entity entity);
 	void RenderHud();
 	void RestartLevel();
 	void ClearObjectMap();
 	Object* CreateObject(unsigned char symbol);
 	Object* CreateObject(Entity entity);
-	void DeleteObject(int y, int x);		// Empty, wall and fog do not can be removed
+	void DeleteObject(Coord coord);		// Empty, wall and fog do not can be removed
 	void PlusPlayerEntity();
 	void MinusPlayerEntity();
 
