@@ -184,16 +184,15 @@ void Editor::RestartLevel()
 
 void Editor::Move()
 {
-	int u_x = _userCoord.x;
-	int u_y = _userCoord.y;
+	Coord c = _userCoord;
 	Entity u_entity = _user->GetEntity();
 
 	switch (KeyDown::getWaitKey())
 	{
-		case Key::W:   MoveHeroTo(u_y-1, u_x);   break;
-		case Key::S:   MoveHeroTo(u_y+1, u_x);   break;
-		case Key::A:   MoveHeroTo(u_y, u_x-1);   break;
-		case Key::D:   MoveHeroTo(u_y, u_x+1);   break;
+		case Key::W:   MoveHeroTo(c.y-1, c.x);   break;
+		case Key::S:   MoveHeroTo(c.y+1, c.x);   break;
+		case Key::A:   MoveHeroTo(c.y, c.x-1);   break;
+		case Key::D:   MoveHeroTo(c.y, c.x+1);   break;
 
 		case Key::E: case Key::KEY_RIGHT:   PlusPlayerEntity();   break;
 		case Key::Q: case Key::KEY_LEFT:    MinusPlayerEntity();  break;
