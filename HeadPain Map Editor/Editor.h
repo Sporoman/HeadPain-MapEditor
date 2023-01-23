@@ -55,7 +55,9 @@ private:
 	void MoveHeroTo(Coord coord);
 	void MoveHeroTo(int y, int x);
 	void ChangeEntity(Coord coord, Entity entity);
+	void RenderMap();
 	void RenderHud();
+	void RenderUser();
 	void SendHudText(int y, int x, const char* text, Color symbolColor = Color::gray, Color bkgColor = Color::black);
 	void SendHudText(int y, int x, const char* text, int count, Color symbolColor = Color::gray, Color bkgColor = Color::black);
 	void RestartLevel();

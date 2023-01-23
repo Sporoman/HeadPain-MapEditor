@@ -105,7 +105,6 @@ void Editor::Shutdown()
 
 void Editor::Initialize()
 {
-	// Clear object map
 	ClearObjectMap();
 
 	switch (_mode)
@@ -126,17 +125,18 @@ void Editor::Initialize()
 
 void Editor::Render()
 {
-	// Render map
+	RenderMap();
+	RenderHud();
+	RenderUser();	
+
+	_renSys->Render();
+}
+
+void Editor::RenderMap()
+{
 	for (int y = 0; y < _settings->lvlSizeY; ++y)
 		for (int x = 0; x < _settings->lvlSizeX; ++x)
 			_renSys->DrawChar(y, x, _objectsMap[y][x]->GetRenderObject());
-	RenderHud();
-
-	// Render player
-	_renSys->DrawChar(_userCoord.y, _userCoord.x, _user->GetRenderObject());
-	_renSys->DrawBkgCharColor(_userCoord.y, _userCoord.x, Color::darkBlue);
-
-	_renSys->Render();
 }
 
 void Editor::RenderHud()
@@ -152,6 +152,12 @@ void Editor::RenderHud()
 
 	SendHudText(y + 1, 4, "WASD - move");
 	SendHudText(y + 2, 4, " R   - restart");
+}
+
+void Editor::RenderUser()
+{
+	_renSys->DrawChar(_userCoord.y, _userCoord.x, _user->GetRenderObject());
+	_renSys->DrawBkgCharColor(_userCoord.y, _userCoord.x, Color::darkBlue);
 }
 
 void Editor::SendHudText(int y, int x, const char* text, Color symbolColor, Color bkgColor)
@@ -180,7 +186,7 @@ void Editor::Move()
 {
 	int u_x = _userCoord.x;
 	int u_y = _userCoord.y;
-	Entity p_entity = _user->GetEntity();
+	Entity u_entity = _user->GetEntity();
 
 	switch (KeyDown::getWaitKey())
 	{
@@ -193,7 +199,7 @@ void Editor::Move()
 		case Key::Q: case Key::KEY_LEFT:    MinusPlayerEntity();  break;
 
 		case Key::F: case Key::KEY_DOWN:         ChangeEntity(_userCoord, Entity::empty);   break;
-		case Key::KEY_SPACE: case Key::KEY_UP:   ChangeEntity(_userCoord, p_entity);	    break;
+		case Key::KEY_SPACE: case Key::KEY_UP:   ChangeEntity(_userCoord, u_entity);	    break;
 
 		case Key::R:   RestartLevel();   break;
 	}
