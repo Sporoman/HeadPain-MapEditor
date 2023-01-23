@@ -1,6 +1,5 @@
 #include "Editor.h"
 #include "KeyDown.h"
-#include <string>
 
 Editor::Editor() : _isGameActive(false), _mode(Mode::NONE)
 {
@@ -142,23 +141,33 @@ void Editor::Render()
 
 void Editor::RenderHud()
 {
+	static const int x = _settings->lvlSizeX + 5; // X indent
+	static const int y = _settings->lvlSizeY;     // Y indent
+
+	SendHudText(4, x, "Level Key", Color::blue);
+	SendHudText(5, x, "Keys",      Color::yellow);
+	
+	SendHudText(13, x, "Your X coord: %i  ", _userCoord.x);
+	SendHudText(14, x, "Your Y coord: %i  ", _userCoord.y);
+
+	SendHudText(y + 1, 4, "WASD - move");
+	SendHudText(y + 2, 4, " R   - restart");
+}
+
+void Editor::SendHudText(int y, int x, const char* text, Color symbolColor, Color bkgColor)
+{
 	static char textBuffer[25];
-	const int _indentX = _settings->lvlSizeX + 5;
 
-	// GLHF
-	sprintf_s(textBuffer, "Level Key");
-	_renSys->SendText(4, _indentX, textBuffer, Color::blue);
-	
-	sprintf_s(textBuffer, "Keys");
-	_renSys->SendText(5, _indentX, textBuffer, Color::yellow);
-	
-	sprintf_s(textBuffer, "Your X coord: %i  ", _userCoord.x);
-	_renSys->SendText(13, _indentX, textBuffer);
-	sprintf_s(textBuffer, "Your Y coord: %i  ", _userCoord.y);
-	_renSys->SendText(14, _indentX, textBuffer);
+	sprintf_s(textBuffer, text);
+	_renSys->SendText(y, x, textBuffer, symbolColor, bkgColor);
+}
 
-	_renSys->SendText(_settings->lvlSizeY + 1, 4, "WASD - move ");
-	_renSys->SendText(_settings->lvlSizeY + 2, 4, " R   - restart");
+void Editor::SendHudText(int y, int x, const char* text, int count, Color symbolColor, Color bkgColor)
+{
+	static char textBuffer[25];
+
+	sprintf_s(textBuffer, text, count);
+	_renSys->SendText(y, x, textBuffer, symbolColor, bkgColor);
 }
 
 void Editor::RestartLevel()
