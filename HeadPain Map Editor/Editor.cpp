@@ -142,7 +142,7 @@ void Editor::RenderMap()
 void Editor::RenderHud()
 {
 	static const int x = _settings->lvlSizeX + 5; // X indent
-	static const int y = _settings->lvlSizeY;     // Y indent
+	static const int y = _settings->lvlSizeY + 1; // Y indent
 
 	SendHudText(4, x, "Level Key", Color::blue);
 	SendHudText(5, x, "Keys",      Color::yellow);
@@ -150,8 +150,8 @@ void Editor::RenderHud()
 	SendHudText(13, x, "Your X coord: %i  ", _userCoord.x);
 	SendHudText(14, x, "Your Y coord: %i  ", _userCoord.y);
 
-	SendHudText(y + 1, 4, "WASD - move");
-	SendHudText(y + 2, 4, " R   - restart");
+	SendHudText(y, 4, "WASD - move");
+	SendHudText(y + 1, 4, " R   - restart");
 }
 
 void Editor::RenderUser()
