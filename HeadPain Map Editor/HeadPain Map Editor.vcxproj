@@ -129,6 +129,7 @@
   <ItemGroup>
     <ClCompile Include="Editor.cpp" />
     <ClCompile Include="FileManager.cpp" />
+    <ClCompile Include="KeyDown.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="renderSystem\renderSystem.cpp" />
@@ -139,6 +140,7 @@
   <ItemGroup>
     <ClInclude Include="Editor.h" />
     <ClInclude Include="FileManager.h" />
+    <ClInclude Include="KeyDown.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="renderSystem\colors.h" />
     <ClInclude Include="renderSystem\RenderObject.h" />

@@ -1,7 +1,6 @@
 #include "Editor.h"
+#include "KeyDown.h"
 #include <string>
-#include <iostream>
-#include <conio.h>
 
 Editor::Editor() : _isGameActive(false), _mode(Mode::NONE)
 {
@@ -78,15 +77,13 @@ void Editor::ChooseMode()
 	while(check)
 	{
 		check = false;
-		unsigned char inputChar = _getch();
-		inputChar = tolower(inputChar);
 
-		switch (inputChar)
+		switch (KeyDown::getWaitKey())
 		{
-			case '1':	_mode = Mode::EDIT_LEVEL;		break;
-			case '2':	_mode = Mode::EDIT_BKG;			break;
-			case '3':	_mode = Mode::CREATE_LEVEL;		break;
-			case '4':	_mode = Mode::CREATE_BKG;		break;
+			case Key::NUM_1:   _mode = Mode::EDIT_LEVEL;	 break;
+			case Key::NUM_2:   _mode = Mode::EDIT_BKG;		 break;
+			case Key::NUM_3:   _mode = Mode::CREATE_LEVEL;   break;
+			case Key::NUM_4:   _mode = Mode::CREATE_BKG;	 break;
 
 			default:
 			check = true;
@@ -121,8 +118,8 @@ void Editor::Initialize()
 	}
 
 	// Set player coord
-	_playerCoord.x = _settings->lvlSizeX / 2;
-	_playerCoord.y = _settings->lvlSizeY / 2;
+	_userCoord.x = _settings->lvlSizeX / 2;
+	_userCoord.y = _settings->lvlSizeY / 2;
 
 	// Clear render system
 	_renSys->Clear();
@@ -137,8 +134,8 @@ void Editor::Render()
 	RenderHud();
 
 	// Render player
-	_renSys->DrawChar(_playerCoord.y, _playerCoord.x, _user->GetRenderObject());
-	_renSys->DrawBkgCharColor(_playerCoord.y, _playerCoord.x, Color::darkBlue);
+	_renSys->DrawChar(_userCoord.y, _userCoord.x, _user->GetRenderObject());
+	_renSys->DrawBkgCharColor(_userCoord.y, _userCoord.x, Color::darkBlue);
 
 	_renSys->Render();
 }
@@ -155,9 +152,9 @@ void Editor::RenderHud()
 	sprintf_s(textBuffer, "Keys");
 	_renSys->SendText(5, _indentX, textBuffer, Color::yellow);
 	
-	sprintf_s(textBuffer, "Your X coord: %i  ", _playerCoord.x);
+	sprintf_s(textBuffer, "Your X coord: %i  ", _userCoord.x);
 	_renSys->SendText(13, _indentX, textBuffer);
-	sprintf_s(textBuffer, "Your Y coord: %i  ", _playerCoord.y);
+	sprintf_s(textBuffer, "Your Y coord: %i  ", _userCoord.y);
 	_renSys->SendText(14, _indentX, textBuffer);
 
 	_renSys->SendText(_settings->lvlSizeY + 1, 4, "WASD - move ");
@@ -172,51 +169,45 @@ void Editor::RestartLevel()
 
 void Editor::Move()
 {
-	unsigned char inputChar = _getch();
-	inputChar = tolower(inputChar);
-
-	int p_x = _playerCoord.x;
-	int p_y = _playerCoord.y;
+	int u_x = _userCoord.x;
+	int u_y = _userCoord.y;
 	Entity p_entity = _user->GetEntity();
 
-	if (inputChar == 0 || inputChar == 224)	// for special keys
-		switch (_getch())
-		{
-			// Up Down Left Right for arrays
-			case 72:   ChangeEntity(p_y, p_x, p_entity);	    break;
-			case 80:   ChangeEntity(p_y, p_x, Entity::empty);	break;
-			case 75:   MinusPlayerEntity();	  break;
-			case 77:   PlusPlayerEntity();    break;
-		}
-	else
-		switch (inputChar)
-		{
-			// Up Down Left Right
-			case 'w': case 230: case 150:   MoveHeroTo(_playerCoord.y - 1, _playerCoord.x);	  break;
-			case 's': case 235: case 155:	MoveHeroTo(_playerCoord.y + 1, _playerCoord.x);	  break;
-			case 'a': case 228: case 148:	MoveHeroTo(_playerCoord.y, _playerCoord.x - 1);	  break;
-			case 'd': case 162: case 130:	MoveHeroTo(_playerCoord.y, _playerCoord.x + 1);   break;
+	switch (KeyDown::getWaitKey())
+	{
+		case Key::W:   MoveHeroTo(u_y-1, u_x);   break;
+		case Key::S:   MoveHeroTo(u_y+1, u_x);   break;
+		case Key::A:   MoveHeroTo(u_y, u_x-1);   break;
+		case Key::D:   MoveHeroTo(u_y, u_x+1);   break;
 
-			case 'e': case 227: case 147:	PlusPlayerEntity();    break;
-			case 'q': case 169: case 137:   MinusPlayerEntity();   break;
-			case 'f': case 160: case 128:	ChangeEntity(p_y, p_x, Entity::empty);	break;
-			case 32:	ChangeEntity(p_y, p_x, p_entity);	break;	// Space
+		case Key::E: case Key::KEY_RIGHT:   PlusPlayerEntity();   break;
+		case Key::Q: case Key::KEY_LEFT:    MinusPlayerEntity();  break;
 
-			case 'r': case 170: case 138:   RestartLevel();   break;	// Restart level
-		}
+		case Key::F: case Key::KEY_DOWN:         ChangeEntity(_userCoord, Entity::empty);   break;
+		case Key::KEY_SPACE: case Key::KEY_UP:   ChangeEntity(_userCoord, p_entity);	    break;
+
+		case Key::R:   RestartLevel();   break;
+	}
+}
+
+void Editor::MoveHeroTo(Coord coord)
+{
+	MoveHeroTo(coord.y, coord.x);
 }
 
 void Editor::MoveHeroTo(int y, int x)
 {
 	if (y >= 0 && y < _settings->lvlSizeY)
-		_playerCoord.y = y;
+		_userCoord.y = y;
 
 	if (x >= 0 && x < _settings->lvlSizeX)
-		_playerCoord.x = x;
+		_userCoord.x = x;
 }
 
-void Editor::ChangeEntity(int y, int x, Entity entity)
+void Editor::ChangeEntity(Coord coord, Entity entity)
 {
+	int y = coord.y;
+	int x = coord.x;
 	Object* obj = _objectsMap[y][x];
 
 	if (obj == _empty || obj == _wall || obj == _fog)
@@ -235,9 +226,9 @@ void Editor::ChangeEntity(int y, int x, Entity entity)
 	{
 		switch (entity)
 		{
-			case Entity::empty:		DeleteObject(y, x);		_objectsMap[y][x] = _empty;		break;
-			case Entity::wall:		DeleteObject(y, x);		_objectsMap[y][x] = _wall;		break;
-			case Entity::fogOfWar:	DeleteObject(y, x);		_objectsMap[y][x] = _fog;		break;
+			case Entity::empty:		DeleteObject(coord);		_objectsMap[y][x] = _empty;		break;
+			case Entity::wall:		DeleteObject(coord);		_objectsMap[y][x] = _wall;		break;
+			case Entity::fogOfWar:	DeleteObject(coord);		_objectsMap[y][x] = _fog;		break;
 
 			default:	_objectsMap[y][x]->SetEntity(entity);
 		}
@@ -307,14 +298,14 @@ Object* Editor::CreateObject(Entity entity)
 	return new Object(entity);
 }
 
-void Editor::DeleteObject(int y, int x)
+void Editor::DeleteObject(Coord coord)
 {
-	Object* obj = _objectsMap[y][x];
+	Object* obj = _objectsMap[coord.y][coord.x];
 
 	if (obj != _empty && obj != _wall && obj != _fog)
 		delete obj;
 
-	_objectsMap[y][x] = nullptr;
+	_objectsMap[coord.y][coord.x] = nullptr;
 }
 
 void Editor::PlusPlayerEntity()

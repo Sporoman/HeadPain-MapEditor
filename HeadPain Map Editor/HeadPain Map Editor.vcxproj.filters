@@ -6,6 +6,7 @@
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Editor.cpp" />
+    <ClCompile Include="KeyDown.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="settings.txt" />
@@ -17,5 +18,6 @@
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Editor.h" />
+    <ClInclude Include="KeyDown.h" />
   </ItemGroup>
 </Project>
