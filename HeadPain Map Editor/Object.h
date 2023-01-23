@@ -5,7 +5,6 @@
 #include "renderSystem//RenderObject.h"
 
 enum class Entity;
-enum class DirMove;
 
 class Object
 {
