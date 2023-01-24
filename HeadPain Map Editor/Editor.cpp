@@ -3,6 +3,7 @@
 
 Editor::Editor() : _isGameActive(false), _mode(Mode::NONE)
 {
+	// Initialize support systems
 	_manager   = new FileManager();
 	_settings  = _manager->GetSettings();
 
@@ -10,17 +11,20 @@ Editor::Editor() : _isGameActive(false), _mode(Mode::NONE)
 	const int renSizeY = _settings->lvlSizeY + _settings->hudMaxSizeY;
 	_renSys = new RenderSystem(renSizeY, renSizeX);
 
-	_user	= new Object(Entity::hero);
-	_empty	= new Object(Entity::empty);
-	_wall   = new Object(Entity::wall);
-	_fog    = new Object(Entity::fog);
+	// Initialize user object
+	_user = new Object(Entity::hero);
 
+	// Initialize clone objects
+	_cloneObjects = new Object* [I_SIZE];
+	_cloneObjects[I_EMPTY] = new Object(Entity::empty);
+	_cloneObjects[I_WALL]  = new Object(Entity::wall);
+	_cloneObjects[I_FOG]   = new Object(Entity::fog);
+
+	// Initialize objects map
 	_objectsMap = new Object** [_settings->lvlSizeY];
-
 	for (int y = 0; y < _settings->lvlSizeY; ++y)
 	{
 		_objectsMap[y] = new Object* [_settings->lvlSizeX];
-
 		for (int x = 0; x < _settings->lvlSizeX; ++x)
 			_objectsMap[y][x] = nullptr;
 	}
@@ -28,16 +32,20 @@ Editor::Editor() : _isGameActive(false), _mode(Mode::NONE)
 
 Editor::~Editor()
 {
+	// Delete objects map
 	ClearObjectMap();
 	for (int y = 0; y < _settings->lvlSizeY; ++y)
 		delete _objectsMap[y];
 	delete[] _objectsMap;
 
+	// Delete user
 	delete _user;
-	delete _empty;
-	delete _wall;
-	delete _fog;
 
+	// Delete clone objects
+	for (int i = 0; i < I_SIZE; ++i)
+		delete _cloneObjects[i];
+
+	// Delete support systems
 	delete _renSys;
 	delete _manager;
 }
@@ -184,21 +192,21 @@ void Editor::RestartLevel()
 
 void Editor::Move()
 {
-	Coord c = _userCoord;
-	Entity u_entity = _user->GetEntity();
+	int y = _userCoord.y;
+	int x = _userCoord.x;
 
 	switch (KeyDown::getWaitKey())
 	{
-		case Key::W:   MoveHeroTo(c.y-1, c.x);   break;
-		case Key::S:   MoveHeroTo(c.y+1, c.x);   break;
-		case Key::A:   MoveHeroTo(c.y, c.x-1);   break;
-		case Key::D:   MoveHeroTo(c.y, c.x+1);   break;
+		case Key::W:   MoveHeroTo(y-1, x);   break;
+		case Key::S:   MoveHeroTo(y+1, x);   break;
+		case Key::A:   MoveHeroTo(y, x-1);   break;
+		case Key::D:   MoveHeroTo(y, x+1);   break;
 
 		case Key::E: case Key::KEY_RIGHT:   PlusPlayerEntity();   break;
 		case Key::Q: case Key::KEY_LEFT:    MinusPlayerEntity();  break;
 
-		case Key::F: case Key::KEY_DOWN:         ChangeEntity(_userCoord, Entity::empty);   break;
-		case Key::KEY_SPACE: case Key::KEY_UP:   ChangeEntity(_userCoord, u_entity);	    break;
+		case Key::F: case Key::KEY_DOWN:         ChangeEntity(_userCoord, Entity::empty);        break;
+		case Key::KEY_SPACE: case Key::KEY_UP:   ChangeEntity(_userCoord, _user->GetEntity());   break;
 
 		case Key::R:   RestartLevel();   break;
 	}
@@ -218,26 +226,22 @@ void Editor::MoveHeroTo(int y, int x)
 		_userCoord.x = x;
 }
 
-void Editor::ChangeEntity(Coord coord, Entity entity)
+void Editor::ChangeEntity(Coord coord, Entity newEntity)
 {
 	int y = coord.y;
 	int x = coord.x;
-	Entity objEntity = _objectsMap[y][x]->GetEntity();
 
-	if (objEntity == Entity::empty || objEntity == Entity::wall || objEntity == Entity::fog)
-		_objectsMap[y][x] = GetGameObject(entity);
+	if (isCloneObject(_objectsMap[y][x]))
+		_objectsMap[y][x] = GetGameObject(newEntity);
 	else
 	{
-		DeleteObject(coord);
-
-		switch (entity)
+		if (isCloneObject(newEntity))
 		{
-			case Entity::empty: case Entity::wall: case Entity::fog:
-				_objectsMap[y][x] = GetGameObject(entity);
-				break;
-
-			default:	_objectsMap[y][x]->SetEntity(entity);
+			DeleteObject(Coord{ y, x });
+			_objectsMap[y][x] = GetGameObject(newEntity);
 		}
+		else
+			_objectsMap[y][x]->SetEntity(newEntity);
 	}
 }
 
@@ -268,25 +272,34 @@ void Editor::LoadLevel()
 		}
 }
 
+bool Editor::isCloneObject(Object* obj)
+{
+	return isCloneObject(obj->GetEntity());
+}
+
+bool Editor::isCloneObject(Entity entity)
+{
+	if (entity == Entity::empty || entity == Entity::wall || entity == Entity::fog)
+		return true;
+
+	return false;
+}
+
 void Editor::ClearObjectMap()
 {
 	for (int y = 0; y < _settings->lvlSizeY; ++y)
 		for (int x = 0; x < _settings->lvlSizeX; ++x)
-			if ((_objectsMap[y][x] != _user) && (_objectsMap[y][x] != _empty)
-				&& (_objectsMap[y][x] != _wall) && (_objectsMap[y][x] != _fog))
-			{
-				delete _objectsMap[y][x];
-				_objectsMap[y][x] = nullptr;
-			}
+			DeleteObject(Coord{ y, x });
+
 }
 
 Object* Editor::GetGameObject(Entity entity)
 {
 	switch (entity)
 	{
-		case Entity::empty:   return _empty;
-		case Entity::wall:    return _wall;
-		case Entity::fog:     return _fog;
+		case Entity::empty:   return _cloneObjects[I_EMPTY];
+		case Entity::wall:    return _cloneObjects[I_WALL];
+		case Entity::fog:     return _cloneObjects[I_FOG];
 
 		case Entity::_error:  return nullptr;
 
@@ -298,7 +311,10 @@ void Editor::DeleteObject(Coord coord)
 {
 	Object* obj = _objectsMap[coord.y][coord.x];
 
-	if (obj != _empty && obj != _wall && obj != _fog && obj != nullptr)
+	if (obj == nullptr)
+		return;
+
+	if (!isCloneObject(obj))
 		delete obj;
 
 	_objectsMap[coord.y][coord.x] = nullptr;

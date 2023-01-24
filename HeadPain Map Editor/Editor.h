@@ -31,11 +31,13 @@ private:
 
 	Coord _userCoord;
 
-	Object* _user;
-	Object* _empty;
-	Object* _wall;
-	Object* _fog;
+	static const int I_EMPTY = 0;
+	static const int I_WALL  = 1;
+	static const int I_FOG   = 2;
+	static const int I_SIZE  = 3;
 
+	Object*   _user;
+	Object**  _cloneObjects;
 	Object*** _objectsMap;
 
 public:
@@ -69,6 +71,8 @@ private:
 
 	void CreateEmptyLevel();
 	void LoadLevel();
+	bool isCloneObject(Object* obj);
+	bool isCloneObject(Entity entity);
 };
 
 #endif // GAME_H
