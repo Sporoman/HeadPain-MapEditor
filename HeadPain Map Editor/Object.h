@@ -10,7 +10,7 @@ class Object
 {
 private:
 	unsigned char _mapSymbol;	// Symbol on the physical map (before render)
-	RenderObject  _renderObj;	// struct: symbol + color symbol + color backgorund
+	RenderObject  _renderObj;	// struct: symbol + symbol color + background color
 	Entity _entity;
 
 public:
