@@ -49,7 +49,7 @@ enum class Entity
 	exitDoor,
 	crystal,
 	mine,
-	fogOfWar,
+	fog,
 	heart,
 	skeleton,
 	rock,

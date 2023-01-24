@@ -70,7 +70,7 @@ Entity Object::GetInitEntity(unsigned char symbol)
 		case 'E':	return Entity::exitDoor;
 		case 'c':	return Entity::crystal;
 		case 'm':	return Entity::mine;
-		case 'F':	return Entity::fogOfWar;
+		case 'F':	return Entity::fog;
 		case '3':	return Entity::heart;
 		case 's':	return Entity::skeleton;
 		case 'r':	return Entity::rock;
@@ -94,7 +94,7 @@ unsigned char Object::GetInitMapSymbol(Entity entity)
 		case Entity::exitDoor:		return 'E';
 		case Entity::crystal:		return 'c';
 		case Entity::mine:			return 'm';
-		case Entity::fogOfWar:		return 'F';
+		case Entity::fog:		return 'F';
 		case Entity::heart:			return '3';
 		case Entity::skeleton:		return 's';
 		case Entity::rock:			return 'r';
@@ -119,7 +119,7 @@ unsigned char Object::GetInitRenderSymbol(Entity entity)
 		case Entity::exitDoor:		return 178;
 		case Entity::crystal:		return 4;
 		case Entity::mine:			return 15;
-		case Entity::fogOfWar:		return 176;
+		case Entity::fog:		return 176;
 		case Entity::heart:			return 3;
 		case Entity::skeleton:		return 2;
 		case Entity::rock:			return 254;
@@ -144,7 +144,7 @@ Color Object::GetInitColorSymbol(Entity entity)
 		case Entity::exitDoor:		return Color::magenta;
 		case Entity::crystal:		return Color::magenta;
 		case Entity::mine:			return Color::red;
-		case Entity::fogOfWar:		return Color::gray;
+		case Entity::fog:		return Color::gray;
 		case Entity::heart:			return Color::red;
 		case Entity::skeleton:		return Color::white;
 		case Entity::rock:			return Color::darkGray;
@@ -169,7 +169,7 @@ Color Object::GetInitColorBkg(Entity entity)
 		case Entity::exitDoor:		return Color::darkGreen;
 		case Entity::crystal:		return Color::black;
 		case Entity::mine:			return Color::black;
-		case Entity::fogOfWar:		return Color::black;
+		case Entity::fog:		return Color::black;
 		case Entity::heart:			return Color::black;
 		case Entity::skeleton:		return Color::black;
 		case Entity::rock:			return Color::black;
