@@ -62,8 +62,7 @@ private:
 	void SendHudText(int y, int x, const char* text, int count, Color symbolColor = Color::gray, Color bkgColor = Color::black);
 	void RestartLevel();
 	void ClearObjectMap();
-	Object* CreateObject(unsigned char symbol);
-	Object* CreateObject(Entity entity);
+	Object* GetGameObject(Entity entity);
 	void DeleteObject(Coord coord);		// Empty, wall and fog do not can be removed
 	void PlusPlayerEntity();
 	void MinusPlayerEntity();

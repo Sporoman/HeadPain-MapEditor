@@ -13,7 +13,7 @@ Editor::Editor() : _isGameActive(false), _mode(Mode::NONE)
 	_user	= new Object(Entity::hero);
 	_empty	= new Object(Entity::empty);
 	_wall   = new Object(Entity::wall);
-	_fog    = new Object(Entity::fogOfWar);
+	_fog    = new Object(Entity::fog);
 
 	_objectsMap = new Object** [_settings->lvlSizeY];
 
@@ -222,27 +222,19 @@ void Editor::ChangeEntity(Coord coord, Entity entity)
 {
 	int y = coord.y;
 	int x = coord.x;
-	Object* obj = _objectsMap[y][x];
+	Entity objEntity = _objectsMap[y][x]->GetEntity();
 
-	if (obj == _empty || obj == _wall || obj == _fog)
-	{
-		// Create the new object
-		switch (entity)
-		{
-			case Entity::empty:		_objectsMap[y][x] = _empty;		break;
-			case Entity::wall:		_objectsMap[y][x] = _wall;		break;
-			case Entity::fogOfWar:	_objectsMap[y][x] = _fog;		break;
-		
-			default:	_objectsMap[y][x] = CreateObject(entity);
-		}
-	}
+	if (objEntity == Entity::empty || objEntity == Entity::wall || objEntity == Entity::fog)
+		_objectsMap[y][x] = GetGameObject(entity);
 	else
 	{
+		DeleteObject(coord);
+
 		switch (entity)
 		{
-			case Entity::empty:		DeleteObject(coord);		_objectsMap[y][x] = _empty;		break;
-			case Entity::wall:		DeleteObject(coord);		_objectsMap[y][x] = _wall;		break;
-			case Entity::fogOfWar:	DeleteObject(coord);		_objectsMap[y][x] = _fog;		break;
+			case Entity::empty: case Entity::wall: case Entity::fog:
+				_objectsMap[y][x] = GetGameObject(entity);
+				break;
 
 			default:	_objectsMap[y][x]->SetEntity(entity);
 		}
@@ -254,9 +246,9 @@ void Editor::CreateEmptyLevel()
 	for (int y = 0; y < _settings->lvlSizeY; ++y)
 		for (int x = 0; x < _settings->lvlSizeX; ++x)
 			if (y == 0 || x == 0)
-				_objectsMap[y][x] = _wall;
+				_objectsMap[y][x] = GetGameObject(Entity::wall);
 			else
-				_objectsMap[y][x] = _empty;
+				_objectsMap[y][x] = GetGameObject(Entity::empty);
 }
 
 void Editor::LoadLevel()
@@ -271,22 +263,8 @@ void Editor::LoadLevel()
 	for (int y = 0; y < _settings->lvlSizeY; ++y)
 		for (int x = 0; x < _settings->lvlSizeX; ++x)
 		{
-			// Take symbol from level map
 			unsigned char symbol = level->at(y * _settings->lvlSizeX + x);
-
-			// Create an object
-			if (symbol == _empty->GetMapSymbol())
-				_objectsMap[y][x] = _empty;
-			else if (symbol == _wall->GetMapSymbol())
-				_objectsMap[y][x] = _wall;
-			else if (symbol == _fog->GetMapSymbol())
-				_objectsMap[y][x] = _fog;
-			else
-			{
-				// Create and set the object on objects map
-				Object* object = CreateObject(symbol);
-				_objectsMap[y][x] = object;
-			}
+			_objectsMap[y][x] = GetGameObject(Object::GetInitEntity(symbol));
 		}
 }
 
@@ -302,21 +280,25 @@ void Editor::ClearObjectMap()
 			}
 }
 
-Object* Editor::CreateObject(unsigned char symbol)
+Object* Editor::GetGameObject(Entity entity)
 {
-	return new Object(symbol);
-}
+	switch (entity)
+	{
+		case Entity::empty:   return _empty;
+		case Entity::wall:    return _wall;
+		case Entity::fog:     return _fog;
 
-Object* Editor::CreateObject(Entity entity)
-{
-	return new Object(entity);
+		case Entity::_error:  return nullptr;
+
+		default:   return new Object(entity);
+	}
 }
 
 void Editor::DeleteObject(Coord coord)
 {
 	Object* obj = _objectsMap[coord.y][coord.x];
 
-	if (obj != _empty && obj != _wall && obj != _fog)
+	if (obj != _empty && obj != _wall && obj != _fog && obj != nullptr)
 		delete obj;
 
 	_objectsMap[coord.y][coord.x] = nullptr;
