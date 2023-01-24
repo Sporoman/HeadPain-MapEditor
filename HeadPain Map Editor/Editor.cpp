@@ -237,7 +237,7 @@ void Editor::ChangeEntity(Coord coord, Entity newEntity)
 	{
 		if (isCloneObject(newEntity))
 		{
-			DeleteObject(Coord{ y, x });
+			DeleteObject(Coord{ x, y });
 			_objectsMap[y][x] = GetGameObject(newEntity);
 		}
 		else
@@ -289,8 +289,7 @@ void Editor::ClearObjectMap()
 {
 	for (int y = 0; y < _settings->lvlSizeY; ++y)
 		for (int x = 0; x < _settings->lvlSizeX; ++x)
-			DeleteObject(Coord{ y, x });
-
+			DeleteObject(Coord{ x, y });
 }
 
 Object* Editor::GetGameObject(Entity entity)
@@ -311,7 +310,7 @@ void Editor::DeleteObject(Coord coord)
 {
 	Object* obj = _objectsMap[coord.y][coord.x];
 
-	if (obj == nullptr)
+	if (_objectsMap[coord.y][coord.x] == nullptr)
 		return;
 
 	if (!isCloneObject(obj))
