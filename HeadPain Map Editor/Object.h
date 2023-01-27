@@ -9,6 +9,8 @@ enum class Entity;
 class Object
 {
 private:
+	static int __countObjects;	// Total number of objects
+
 	unsigned char _mapSymbol;	// Symbol on the physical map (before render)
 	RenderObject  _renderObj;	// struct: symbol + symbol color + background color
 	Entity _entity;
@@ -21,12 +23,9 @@ public:
 	void SetEntity(Entity entity);
 
 	Entity GetEntity();
-	unsigned char GetMapSymbol();
-	unsigned char GetRenderSymbol();
-	Color GetColorSymbol();
-	Color GetColorBackground();
 	const RenderObject& GetRenderObject();
-	
+
+	static int GetObjectsCount();
 	static Entity GetInitEntity(unsigned char symbol);
 	static unsigned char GetInitMapSymbol(Entity entity);
 	static unsigned char GetInitRenderSymbol(Entity entity);
