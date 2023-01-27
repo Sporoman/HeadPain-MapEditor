@@ -65,7 +65,7 @@ private:
 	void RestartLevel();
 	void ClearObjectMap();
 	Object* GetGameObject(Entity entity);
-	void DeleteObject(Coord coord);		// Empty, wall and fog do not can be removed
+	void DeleteObject(Coord coord);
 	void PlusPlayerEntity();
 	void MinusPlayerEntity();
 

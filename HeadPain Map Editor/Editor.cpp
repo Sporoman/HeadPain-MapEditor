@@ -158,6 +158,8 @@ void Editor::RenderHud()
 	SendHudText(13, x, "Your X coord: %i  ", _userCoord.x);
 	SendHudText(14, x, "Your Y coord: %i  ", _userCoord.y);
 
+	SendHudText(16, x, "Objects count: %i  ", Object::GetObjectsCount());
+
 	SendHudText(y, 4, "WASD - move");
 	SendHudText(y + 1, 4, " R   - restart");
 }
