@@ -71,7 +71,6 @@ private:
 
 	void CreateEmptyLevel();
 	void LoadLevel();
-	bool isCloneObject(Object* obj);
 	bool isCloneObject(Entity entity);
 };
 

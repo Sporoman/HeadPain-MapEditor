@@ -233,7 +233,7 @@ void Editor::ChangeEntity(Coord coord, Entity newEntity)
 	int y = coord.y;
 	int x = coord.x;
 
-	if (isCloneObject(_objectsMap[y][x]))
+	if (isCloneObject(_objectsMap[y][x]->GetEntity()))
 		_objectsMap[y][x] = GetGameObject(newEntity);
 	else
 	{
@@ -274,11 +274,6 @@ void Editor::LoadLevel()
 		}
 }
 
-bool Editor::isCloneObject(Object* obj)
-{
-	return isCloneObject(obj->GetEntity());
-}
-
 bool Editor::isCloneObject(Entity entity)
 {
 	if (entity == Entity::empty || entity == Entity::wall || entity == Entity::fog)
@@ -315,7 +310,7 @@ void Editor::DeleteObject(Coord coord)
 	if (_objectsMap[coord.y][coord.x] == nullptr)
 		return;
 
-	if (!isCloneObject(obj))
+	if (!isCloneObject(obj->GetEntity()))
 		delete obj;
 
 	_objectsMap[coord.y][coord.x] = nullptr;
