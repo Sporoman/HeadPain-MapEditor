@@ -4,8 +4,8 @@
 ##3  b  b   ###FF###FF########F##########F##########F########FF######  #    r   
 ##      #   DFFFFFFFFF####FFFFFFFFF##FFFFFFFFF##FFFFFFFFF####FF######  b        
 ##sk  rr#   #FFFFFF#FF####FFFFFFFFF##FFFFFFFFF##FFFFFFFFF####FF######  #      r#
-#########   #FFFFFF#FF####FFFFFFFFF##FFFFFFFFF##FFFFFFFFF####FF######  #  rr####
-#########   #FFFFFF#FF#######################################FF######  #########
+#####&###   #FFFFFF#FF####FFFFFFFFF##FFFFFFFFF##FFFFFFFFF####FF######  #  rr####
+#####&###   #FFFFFF#FF#######################################FF######  #########
 F#    s #   #FFFFFF#FF#######################################FF######  #      ##
 F#r     #   #FFFFFF#FF####FFFFFFFFF##FFFFFFFFF##FFFFFFFFF####FF######  #      ##
 F H     d   #FFFFFF#FF####FFFFFFFFF##FFFFFFFFF##FFFFFFFFF####DD######  b      ##

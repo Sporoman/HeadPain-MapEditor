@@ -54,9 +54,8 @@ private:
 	void Render();
 	void Move();
 	
-	void MoveHeroTo(Coord coord);
 	void MoveHeroTo(int y, int x);
-	void ChangeEntity(Coord coord, Entity entity);
+	void ChangeObjectEntity(Coord coord, Entity entity);
 	void RenderMap();
 	void RenderHud();
 	void RenderUser();

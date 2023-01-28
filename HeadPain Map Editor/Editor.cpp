@@ -207,28 +207,34 @@ void Editor::Move()
 		case Key::E: case Key::KEY_RIGHT:   PlusPlayerEntity();   break;
 		case Key::Q: case Key::KEY_LEFT:    MinusPlayerEntity();  break;
 
-		case Key::F: case Key::KEY_DOWN:         ChangeEntity(_userCoord, Entity::empty);        break;
-		case Key::KEY_SPACE: case Key::KEY_UP:   ChangeEntity(_userCoord, _user->GetEntity());   break;
+		case Key::F: case Key::KEY_DOWN:         ChangeObjectEntity(_userCoord, Entity::empty);        break;
+		case Key::KEY_SPACE: case Key::KEY_UP:   ChangeObjectEntity(_userCoord, _user->GetEntity());   break;
 
 		case Key::R:   RestartLevel();   break;
 	}
 }
 
-void Editor::MoveHeroTo(Coord coord)
-{
-	MoveHeroTo(coord.y, coord.x);
-}
-
 void Editor::MoveHeroTo(int y, int x)
 {
-	if (y >= 0 && y < _settings->lvlSizeY)
-		_userCoord.y = y;
+	int yMax = _settings->lvlSizeY;
+	int xMax = _settings->lvlSizeX;
 
-	if (x >= 0 && x < _settings->lvlSizeX)
-		_userCoord.x = x;
+	if (y >= yMax)
+		y = 0;
+	else if (y < 0)
+		y = yMax-1;
+	
+	_userCoord.y = y;
+
+	if (x >= xMax)
+		x = 0;
+	else if (x < 0)
+		x = xMax-1;
+	
+	_userCoord.x = x;
 }
 
-void Editor::ChangeEntity(Coord coord, Entity newEntity)
+void Editor::ChangeObjectEntity(Coord coord, Entity newEntity)
 {
 	int y = coord.y;
 	int x = coord.x;
