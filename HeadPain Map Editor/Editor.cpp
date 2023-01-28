@@ -249,9 +249,12 @@ void Editor::ChangeEntity(Coord coord, Entity newEntity)
 
 void Editor::CreateEmptyLevel()
 {
-	for (int y = 0; y < _settings->lvlSizeY; ++y)
-		for (int x = 0; x < _settings->lvlSizeX; ++x)
-			if (y == 0 || x == 0)
+	int yMax = _settings->lvlSizeY;
+	int xMax = _settings->lvlSizeX;
+
+	for (int y = 0; y < yMax; ++y)
+		for (int x = 0; x < xMax; ++x)
+			if (y == 0 || x == 0 || y == yMax-1 || x == xMax-1)
 				_objectsMap[y][x] = GetGameObject(Entity::wall);
 			else
 				_objectsMap[y][x] = GetGameObject(Entity::empty);
@@ -297,7 +300,7 @@ Object* Editor::GetGameObject(Entity entity)
 		case Entity::wall:    return _cloneObjects[I_WALL];
 		case Entity::fog:     return _cloneObjects[I_FOG];
 
-		case Entity::_error:  return nullptr;
+		case Entity::_error: case Entity::_size:   return nullptr;
 
 		default:   return new Object(entity);
 	}
@@ -307,7 +310,7 @@ void Editor::DeleteObject(Coord coord)
 {
 	Object* obj = _objectsMap[coord.y][coord.x];
 
-	if (_objectsMap[coord.y][coord.x] == nullptr)
+	if (obj == nullptr)
 		return;
 
 	if (!isCloneObject(obj->GetEntity()))
