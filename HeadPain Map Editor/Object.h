@@ -42,16 +42,17 @@ enum class Entity
 	wall,
 	door,
 	levelDoor,
+	box,
+	rock,
+	mine,
 	key,
 	levelKey,
-	box,
-	exitDoor,
 	crystal,
-	mine,
-	fog,
 	heart,
 	skeleton,
-	rock,
+	exitDoor,
+	fakeWall,
+	fog,
 	_size
 };
 
