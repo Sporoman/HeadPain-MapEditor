@@ -36,6 +36,7 @@ private:
 	static const int I_FOG   = 2;
 	static const int I_SIZE  = 3;
 
+	Object*   _hudObject;
 	Object*   _user;
 	Object**  _cloneObjects;
 	Object*** _objectsMap;
@@ -53,23 +54,27 @@ private:
 	void Initialize();
 	void Render();
 	void Move();
-	
+
+	void ClearObjectMap();
+	void CreateEmptyLevel();
+	void LoadLevel();
+
 	void MoveHeroTo(int y, int x);
 	void ChangeObjectEntity(Coord coord, Entity entity);
 	void RenderMap();
-	void RenderHud();
 	void RenderUser();
+	void RenderHud();
+	void PreRenderHud();
+	void SendHudEntity(int y, int x, Entity entity, const char* number);
 	void SendHudText(int y, int x, const char* text, Color symbolColor = Color::gray, Color bkgColor = Color::black);
 	void SendHudText(int y, int x, const char* text, int count, Color symbolColor = Color::gray, Color bkgColor = Color::black);
+	void SendHudText(int y, int x, const char* text, const char* count, Color symbolColor = Color::gray, Color bkgColor = Color::black);
 	void RestartLevel();
-	void ClearObjectMap();
 	Object* GetGameObject(Entity entity);
 	void DeleteObject(Coord coord);
 	void PlusPlayerEntity();
 	void MinusPlayerEntity();
 
-	void CreateEmptyLevel();
-	void LoadLevel();
 	bool isCloneObject(Entity entity);
 };
 

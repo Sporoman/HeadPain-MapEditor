@@ -1,4 +1,4 @@
-#include "Editor.h"
+﻿#include "Editor.h"
 #include "KeyDown.h"
 
 Editor::Editor() : _isGameActive(false), _mode(Mode::NONE)
@@ -11,8 +11,9 @@ Editor::Editor() : _isGameActive(false), _mode(Mode::NONE)
 	const int renSizeY = _settings->lvlSizeY + _settings->hudMaxSizeY;
 	_renSys = new RenderSystem(renSizeY, renSizeX);
 
-	// Initialize user object
+	// Initialize user and hud objects
 	_user = new Object(Entity::hero);
+	_hudObject = new Object(Entity::empty);
 
 	// Initialize clone objects
 	_cloneObjects = new Object* [I_SIZE];
@@ -58,6 +59,7 @@ void Editor::Start()
 	while (true)
 	{
 		Initialize();
+		PreRenderHud();
 
 		while (_isGameActive)
 		{
@@ -123,11 +125,10 @@ void Editor::Initialize()
 		default: exit(-2);
 	}
 
-	// Set player coord
+	// Set player coord and clear render system
 	_userCoord.x = _settings->lvlSizeX / 2;
 	_userCoord.y = _settings->lvlSizeY / 2;
 
-	// Clear render system
 	_renSys->Clear();
 }
 
@@ -147,32 +148,70 @@ void Editor::RenderMap()
 			_renSys->DrawChar(y, x, _objectsMap[y][x]->GetRenderObject());
 }
 
-void Editor::RenderHud()
-{
-	static const int x = _settings->lvlSizeX + 5; // X indent
-	static const int y = _settings->lvlSizeY + 1; // Y indent
-
-	SendHudText(4, x, "Level Key", Color::blue);
-	SendHudText(5, x, "Keys",      Color::yellow);
-	
-	SendHudText(13, x, "Your X coord: %i  ", _userCoord.x);
-	SendHudText(14, x, "Your Y coord: %i  ", _userCoord.y);
-
-	SendHudText(16, x, "Objects count: %i  ", Object::GetObjectsCount());
-
-	SendHudText(y, 4, "WASD - move");
-	SendHudText(y + 1, 4, " R   - restart");
-}
-
 void Editor::RenderUser()
 {
 	_renSys->DrawChar(_userCoord.y, _userCoord.x, _user->GetRenderObject());
 	_renSys->DrawBkgCharColor(_userCoord.y, _userCoord.x, Color::darkBlue);
 }
 
+void Editor::RenderHud()
+{
+	static const int x = _settings->lvlSizeX + 4; // X indent
+	static const int y = _settings->lvlSizeY + 2; // Y indent
+	
+	SendHudText(y,   4, "Current entity: %s       ", Object::GetEntityName(_user->GetEntity()));
+	SendHudText(y+1, 4, "Objects count: %i  ", Object::GetObjectsCount());
+
+	SendHudText(y,   x-20, "Your X coord: %i  ", _userCoord.x);
+	SendHudText(y+1, x-20, "Your Y coord: %i  ", _userCoord.y);
+}
+
+void Editor::PreRenderHud()
+{
+	static const int x = _settings->lvlSizeX + 4; // X indent
+	static const int y = _settings->lvlSizeY + 2; // Y indent
+
+	// Entities
+	SendHudText(1, x, "-Entities-", Color::green);
+
+	SendHudEntity(2, x, Entity::empty, "1");
+	SendHudEntity(3, x, Entity::hero, "2");
+	SendHudEntity(4, x, Entity::wall, "3");
+	SendHudEntity(5, x, Entity::door, "4");
+	SendHudEntity(6, x, Entity::levelDoor, "5");
+	SendHudEntity(7, x, Entity::box, "6");
+	SendHudEntity(8, x, Entity::rock, "7");
+	SendHudEntity(9, x, Entity::mine, "8");
+
+	SendHudEntity(2, x + 7, Entity::key, "9");
+	SendHudEntity(3, x + 7, Entity::levelKey, "0");
+	SendHudEntity(4, x + 7, Entity::crystal, "x");
+	SendHudEntity(5, x + 7, Entity::heart, "x");
+	SendHudEntity(6, x + 7, Entity::skeleton, "x");
+	SendHudEntity(7, x + 7, Entity::fakeWall, "x");
+	SendHudEntity(8, x + 7, Entity::fog, "x");
+
+	// Keys
+	SendHudText(12, x, "-Keys-", Color::blue);
+
+	SendHudText(13, x, "WASD  - move");
+	SendHudText(14, x, "Q/E   - change Entity");
+	SendHudText(15, x, "F     - set Empty");
+	SendHudText(16, x, "SPACE - set Entity");
+	SendHudText(17, x, "R     - restart");
+}
+
+void Editor::SendHudEntity(int y, int x, Entity entity, const char* number)
+{
+	_hudObject->SetEntity(entity);
+	_renSys->DrawChar(y, x, _hudObject->GetRenderObject());
+	_renSys->SendText(y, x+1, " - ");
+	_renSys->SendText(y, x+4, number);
+}
+
 void Editor::SendHudText(int y, int x, const char* text, Color symbolColor, Color bkgColor)
 {
-	static char textBuffer[25];
+	static char textBuffer[50];
 
 	sprintf_s(textBuffer, text);
 	_renSys->SendText(y, x, textBuffer, symbolColor, bkgColor);
@@ -180,7 +219,15 @@ void Editor::SendHudText(int y, int x, const char* text, Color symbolColor, Colo
 
 void Editor::SendHudText(int y, int x, const char* text, int count, Color symbolColor, Color bkgColor)
 {
-	static char textBuffer[25];
+	static char textBuffer[50];
+
+	sprintf_s(textBuffer, text, count);
+	_renSys->SendText(y, x, textBuffer, symbolColor, bkgColor);
+}
+
+void Editor::SendHudText(int y, int x, const char* text, const char* count, Color symbolColor, Color bkgColor)
+{
+	static char textBuffer[50];
 
 	sprintf_s(textBuffer, text, count);
 	_renSys->SendText(y, x, textBuffer, symbolColor, bkgColor);
@@ -279,7 +326,7 @@ void Editor::LoadLevel()
 		for (int x = 0; x < _settings->lvlSizeX; ++x)
 		{
 			unsigned char symbol = level->at(y * _settings->lvlSizeX + x);
-			_objectsMap[y][x] = GetGameObject(Object::GetInitEntity(symbol));
+			_objectsMap[y][x] = GetGameObject(Object::GetEntity(symbol));
 		}
 }
 
@@ -305,8 +352,6 @@ Object* Editor::GetGameObject(Entity entity)
 		case Entity::empty:   return _cloneObjects[I_EMPTY];
 		case Entity::wall:    return _cloneObjects[I_WALL];
 		case Entity::fog:     return _cloneObjects[I_FOG];
-
-		case Entity::_error: case Entity::_size:   return nullptr;
 
 		default:   return new Object(entity);
 	}
