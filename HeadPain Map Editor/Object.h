@@ -26,12 +26,13 @@ public:
 	const RenderObject& GetRenderObject();
 
 	static int GetObjectsCount();
-	static Entity GetInitEntity(unsigned char symbol);
-	static unsigned char GetInitMapSymbol(Entity entity);
-	static unsigned char GetInitRenderSymbol(Entity entity);
-	static Color GetInitColorSymbol(Entity entity);
-	static Color GetInitColorBkg(Entity entity);
-	static Color GetInitColorFromBkgMap(unsigned char symbol);
+	static Entity GetEntity(unsigned char symbol);
+	static char* GetEntityName(Entity entity);
+	static unsigned char GetMapSymbol(Entity entity);
+	static unsigned char GetRenderSymbol(Entity entity);
+	static Color GetColorSymbol(Entity entity);
+	static Color GetColorBkg(Entity entity);
+	static Color GetColorFromBkgMap(unsigned char symbol);
 };
 
 enum class Entity

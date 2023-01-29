@@ -1,8 +1,9 @@
 #include "Object.h"
+#include <stdio.h>
 
 int Object::__countObjects = 0;
 
-Object::Object(unsigned char symbol) : Object(GetInitEntity(symbol))
+Object::Object(unsigned char symbol) : Object(GetEntity(symbol))
 {}
 
 Object::Object(Entity entity)
@@ -24,12 +25,12 @@ void Object::SetEntity(Entity entity)
 	_entity = entity;
 
 	// Initializing the object
-	_mapSymbol = GetInitMapSymbol(_entity);
+	_mapSymbol = GetMapSymbol(_entity);
 
 	// Initializing the render object
-	_renderObj.symbol      = GetInitRenderSymbol(_entity);
-	_renderObj.symbolColor = GetInitColorSymbol(_entity);
-	_renderObj.bkgColor    = GetInitColorBkg(_entity);
+	_renderObj.symbol      = GetRenderSymbol(_entity);
+	_renderObj.symbolColor = GetColorSymbol(_entity);
+	_renderObj.bkgColor    = GetColorBkg(_entity);
 }
 
 Entity Object::GetEntity()
@@ -47,7 +48,7 @@ int Object::GetObjectsCount()
 	return __countObjects;
 }
 
-Entity Object::GetInitEntity(unsigned char symbol)
+Entity Object::GetEntity(unsigned char symbol)
 {
 	switch (symbol)
 	{
@@ -72,7 +73,36 @@ Entity Object::GetInitEntity(unsigned char symbol)
 	}
 }
 
-unsigned char Object::GetInitMapSymbol(Entity entity)
+char* Object::GetEntityName(Entity entity)
+{
+	static char buffer[15];
+	
+	switch (entity)
+	{
+		case Entity::empty:		  sprintf_s(buffer, "Empty");        break;
+		case Entity::hero:		  sprintf_s(buffer, "Hero");         break;
+		case Entity::wall:		  sprintf_s(buffer, "Wall");         break;
+		case Entity::door:		  sprintf_s(buffer, "Door");         break;
+		case Entity::levelDoor:   sprintf_s(buffer, "Level door");   break;
+		case Entity::box:		  sprintf_s(buffer, "Box");          break;
+		case Entity::rock:		  sprintf_s(buffer, "Rock");         break;
+		case Entity::mine:		  sprintf_s(buffer, "Mine");         break;
+		case Entity::key:		  sprintf_s(buffer, "Key");          break;
+		case Entity::levelKey:	  sprintf_s(buffer, "Level key");    break;
+		case Entity::crystal:	  sprintf_s(buffer, "Crystal");      break;
+		case Entity::heart:		  sprintf_s(buffer, "Heart");        break;
+		case Entity::skeleton:    sprintf_s(buffer, "Skeleton");     break;
+		case Entity::exitDoor:	  sprintf_s(buffer, "Exit door");    break;
+		case Entity::fakeWall:	  sprintf_s(buffer, "Fake wall");    break;
+		case Entity::fog:		  sprintf_s(buffer, "Fog");          break;
+
+		default:   sprintf_s(buffer, "?");
+	}
+
+	return buffer;
+}
+
+unsigned char Object::GetMapSymbol(Entity entity)
 {
 	switch (entity)
 	{
@@ -97,7 +127,7 @@ unsigned char Object::GetInitMapSymbol(Entity entity)
 	}
 }
 
-unsigned char Object::GetInitRenderSymbol(Entity entity)
+unsigned char Object::GetRenderSymbol(Entity entity)
 {
 	switch (entity)
 	{
@@ -122,7 +152,7 @@ unsigned char Object::GetInitRenderSymbol(Entity entity)
 	}
 }
 
-Color Object::GetInitColorSymbol(Entity entity)
+Color Object::GetColorSymbol(Entity entity)
 {
 	switch (entity)
 	{
@@ -147,7 +177,7 @@ Color Object::GetInitColorSymbol(Entity entity)
 	}
 }
 
-Color Object::GetInitColorBkg(Entity entity)
+Color Object::GetColorBkg(Entity entity)
 {
 	switch (entity)
 	{
@@ -172,7 +202,7 @@ Color Object::GetInitColorBkg(Entity entity)
 	}
 }
 
-Color Object::GetInitColorFromBkgMap(unsigned char symbol)
+Color Object::GetColorFromBkgMap(unsigned char symbol)
 {
 	switch (symbol)
 	{
