@@ -41,16 +41,14 @@ bool FileManager::ReadLevel()
 	return true;
 }
 
-bool FileManager::WriteLevel()
+bool FileManager::WriteLevel(std::string* const levelMap)
 {
-	std::string fileName = "levels/level.txt";
+	std::string fileName = "levels/new_level.txt";
 	std::fstream file(fileName, std::ios_base::out);
 	if (!file.is_open())
 		return false;
 
-	// Writing level to the file
-	std::string levelStr;
-	file << levelStr;
+	file << *levelMap;
 
 	file.close();
 	return true;

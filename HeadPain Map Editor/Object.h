@@ -23,6 +23,7 @@ public:
 	void SetEntity(Entity entity);
 
 	Entity GetEntity();
+	unsigned char GetMapSymbol();
 	const RenderObject& GetRenderObject();
 
 	static int GetObjectsCount();

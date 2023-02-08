@@ -18,7 +18,7 @@ public:
 	~FileManager();
 
 	bool ReadLevel();
-	bool WriteLevel();
+	bool WriteLevel(std::string* const levelMap);
 	const std::string* GetLastLevel();
 	const Settings* const GetSettings();
 

@@ -257,7 +257,8 @@ void Editor::Move()
 		case Key::F: case Key::KEY_DOWN:         ChangeObjectEntity(_userCoord, Entity::empty);        break;
 		case Key::KEY_SPACE: case Key::KEY_UP:   ChangeObjectEntity(_userCoord, _user->GetEntity());   break;
 
-		case Key::R:   RestartLevel();   break;
+		case Key::R:           RestartLevel();   break;
+		case Key::KEY_ENTER:   SaveLevel();      break;
 	}
 }
 
@@ -328,6 +329,22 @@ void Editor::LoadLevel()
 			unsigned char symbol = level->at(y * _settings->lvlSizeX + x);
 			_objectsMap[y][x] = GetGameObject(Object::GetEntity(symbol));
 		}
+}
+
+void Editor::SaveLevel()
+{
+	int sizeY = _settings->lvlSizeY;
+	int sizeX = _settings->lvlSizeX;
+
+	std::string levelMap;
+	for (int y = 0; y < sizeY; ++y)
+	{
+		for (int x = 0; x < sizeX; ++x)
+			levelMap += _objectsMap[y][x]->GetMapSymbol();
+		levelMap += '\n';
+	}
+
+	_manager->WriteLevel(&levelMap);
 }
 
 bool Editor::isCloneObject(Entity entity)

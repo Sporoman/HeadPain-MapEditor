@@ -38,6 +38,11 @@ Entity Object::GetEntity()
 	return _entity;
 }
 
+unsigned char Object::GetMapSymbol()
+{
+	return _mapSymbol;
+}
+
 const RenderObject& Object::GetRenderObject()
 {
 	return _renderObj;

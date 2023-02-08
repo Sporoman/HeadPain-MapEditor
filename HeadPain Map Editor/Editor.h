@@ -58,6 +58,7 @@ private:
 	void ClearObjectMap();
 	void CreateEmptyLevel();
 	void LoadLevel();
+	void SaveLevel();
 
 	void MoveHeroTo(int y, int x);
 	void ChangeObjectEntity(Coord coord, Entity entity);
